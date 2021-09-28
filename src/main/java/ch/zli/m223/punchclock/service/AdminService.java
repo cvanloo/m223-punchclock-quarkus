@@ -1,6 +1,7 @@
 package ch.zli.m223.punchclock.service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 
 import ch.zli.m223.punchclock.domain.User;
@@ -46,5 +47,16 @@ public class AdminService {
     @Transactional
     public User updateUser(User user) {
         return entityManager.merge(user);
+    }
+
+    @Transactional
+    public User getUserByName(String username) {
+        var query = entityManager.createQuery("FROM User WHERE accountname = :username").setParameter("username", username);
+
+        try {
+            return (User) query.getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
     }
 }

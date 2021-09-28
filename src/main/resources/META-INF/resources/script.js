@@ -1,5 +1,5 @@
 const URL = 'http://localhost:8080';
-const JWT = localStorage.getItem("Token");
+const JWT = localStorage.getItem("jwt");
 let entries = [];
 
 const dateAndTimeToDate = (dateString, timeString) => {
@@ -12,7 +12,7 @@ const createEntry = (e) => {
     const entry = {};
     entry['checkIn'] = dateAndTimeToDate(formData.get('checkInDate'), formData.get('checkInTime'));
     entry['checkOut'] = dateAndTimeToDate(formData.get('checkOutDate'), formData.get('checkOutTime'));
-    entry['user'] = null;
+    entry['user'] = null; 
     entry['category'] = null;
     entry['facility'] = null;
 

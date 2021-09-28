@@ -1,3 +1,5 @@
+const URL = 'http://localhost:8080';
+
 const login = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -11,14 +13,13 @@ const login = (e) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(authRequest)
-    }).then((result) => {
-        result.json().then((token) => {
+    }).then((response) => {
+        response.text().then((token) => {
             console.log(token);
-            localStorage.setItem("jwt", token); // save jwt to local storage
+            localStorage.setItem("jwt", token);
         });
     });
-
-}
+};
 
 document.addEventListener('DOMContentLoaded', function(){
     const createEntryForm = document.querySelector('#loginForm');
