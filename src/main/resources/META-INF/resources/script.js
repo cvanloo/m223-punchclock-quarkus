@@ -1,4 +1,5 @@
 const URL = 'http://localhost:8080';
+const JWT = localStorage.getItem("Token");
 let entries = [];
 
 const dateAndTimeToDate = (dateString, timeString) => {
@@ -11,11 +12,15 @@ const createEntry = (e) => {
     const entry = {};
     entry['checkIn'] = dateAndTimeToDate(formData.get('checkInDate'), formData.get('checkInTime'));
     entry['checkOut'] = dateAndTimeToDate(formData.get('checkOutDate'), formData.get('checkOutTime'));
+    entry['user'] = null;
+    entry['category'] = null;
+    entry['facility'] = null;
 
     fetch(`${URL}/entries`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + JWT
         },
         body: JSON.stringify(entry)
     }).then((result) => {
@@ -30,7 +35,8 @@ const editEntry = (entry) => {
     fetch(`${URL}/entries`, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + JWT
         },
         body: JSON.stringify(entry)
     }).then((result) => {
@@ -40,7 +46,10 @@ const editEntry = (entry) => {
 
 const deleteEntry = (entryId) => {
     fetch(`${URL}/entries/${entryId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + JWT
+        }
     }).then(() => {
         indexEntries();
     });
@@ -48,7 +57,10 @@ const deleteEntry = (entryId) => {
 
 const indexEntries = () => {
     fetch(`${URL}/entries`, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + JWT
+        }
     }).then((result) => {
         result.json().then((result) => {
             entries = result;

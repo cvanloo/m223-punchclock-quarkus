@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Punchclock Login</title>
+    </head>
+    <body>
+        <form id="registerForm">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required> </br>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required> </br>
+            <input type="submit">
+        </form>
+    </body>
+</html>
+
+<script>
+    const register = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const authRequest = {};
+        authRequest['username'] = formData.get('username');
+        authRequest['password'] = formData.get('password');
+
+        fetch(`${URL}/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(authRequest)
+        }).then((result) => {
+            if (result == 200) {
+                window.location = 'login.html';
+            }
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', function(){
+        const createEntryForm = document.querySelector('#registerForm');
+        createEntryForm.addEventListener('submit', register);
+    });
+</script>

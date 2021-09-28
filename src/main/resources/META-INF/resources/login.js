@@ -14,6 +14,7 @@ const login = (e) => {
     }).then((result) => {
         result.json().then((token) => {
             console.log(token);
+            localStorage.setItem("jwt", token); // save jwt to local storage
         });
     });
 
