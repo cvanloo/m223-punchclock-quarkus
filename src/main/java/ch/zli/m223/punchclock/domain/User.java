@@ -2,11 +2,12 @@ package ch.zli.m223.punchclock.domain;
 
 import javax.persistence.*;
 
-import io.quarkus.security.common.BcryptUtil;
+//import io.quarkus.security.common.BcryptUtil;
 
 @Entity
 public class User {
 
+    // NOTE(cvl): The classdiagram falsely depicts this as type User instead of Long.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +38,8 @@ public class User {
     }
 
     public void setPasswdHash(String passwd) {
-        this.passwdHash = BcryptUtil.bcryptHash(passwd);
+        //this.passwdHash = BcryptUtil.bcryptHash(passwd);
+        this.passwdHash = passwd; // TODO: Hash
     }
 
     public String getPasswordHash() {
@@ -53,6 +55,7 @@ public class User {
     }
 
     public boolean checkPassword(String passwd) {
-        return passwdHash.equals(BcryptUtil.bcryptHash(passwd));
+        //return passwdHash.equals(BcryptUtil.bcryptHash(passwd));
+        return passwdHash.equals(passwd); // TODO: Hash
     }
 }

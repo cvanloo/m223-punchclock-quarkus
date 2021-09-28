@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Entry {
 
+    // NOTE(cvl): The classdiagram falsely depicts this as type User instead of Long.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
