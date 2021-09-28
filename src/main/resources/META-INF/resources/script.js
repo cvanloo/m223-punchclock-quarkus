@@ -26,6 +26,26 @@ const createEntry = (e) => {
     });
 };
 
+const editEntry = (entry) => {
+    fetch(`${URL}/entries`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(entry)
+    }).then((result) => {
+        result.json().then(indexEntries());
+    });
+};
+
+const deleteEntry = (entryId) => {
+    fetch(`${URL}/entries/${entryId}`, {
+        method: 'DELETE'
+    }).then(() => {
+        indexEntries();
+    });
+};
+
 const indexEntries = () => {
     fetch(`${URL}/entries`, {
         method: 'GET'
@@ -44,6 +64,22 @@ const createCell = (text) => {
     return cell;
 };
 
+const createActions = (entry) => {
+    const cell = document.createElement('td');
+
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = 'Delete';
+    deleteButton.addEventListener('click', () => deleteEntry(entry.id));
+    cell.appendChild(deleteButton);
+
+    const editButton = document.createElement('button');
+    editButton.innerText = 'Edit';
+    editButton.addEventListener('click', () => editEntry(entry));
+    cell.appendChild(editButton);
+
+    return cell;
+}
+
 const renderEntries = () => {
     const display = document.querySelector('#entryDisplay');
     display.innerHTML = '';
@@ -52,6 +88,7 @@ const renderEntries = () => {
         row.appendChild(createCell(entry.id));
         row.appendChild(createCell(new Date(entry.checkIn).toLocaleString()));
         row.appendChild(createCell(new Date(entry.checkOut).toLocaleString()));
+        row.appendChild(createActions(entry));
         display.appendChild(row);
     });
 };

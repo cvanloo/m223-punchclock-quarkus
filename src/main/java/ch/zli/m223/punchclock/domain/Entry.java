@@ -16,27 +16,39 @@ public class Entry {
     @Column(nullable = false)
     private LocalDateTime checkOut;
 
-    public Long getId() {
-        return id;
-    }
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User user;
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public LocalDateTime getCheckIn() {
-        return checkIn;
+    public Long getId() {
+        return id;
     }
 
     public void setCheckIn(LocalDateTime checkIn) {
         this.checkIn = checkIn;
     }
 
-    public LocalDateTime getCheckOut() {
-        return checkOut;
+    public LocalDateTime getCheckIn() {
+        return checkIn;
     }
 
     public void setCheckOut(LocalDateTime checkOut) {
         this.checkOut = checkOut;
+    }
+
+    public LocalDateTime getCheckOut() {
+        return checkOut;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
