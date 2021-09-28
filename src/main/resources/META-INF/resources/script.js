@@ -1,6 +1,7 @@
 const URL = 'http://localhost:8080';
-const JWT = localStorage.getItem("jwt");
+const JWT = localStorage.getItem("jwt"); // read jwt from session storage
 let entries = [];
+let mode = 'create';
 
 const dateAndTimeToDate = (dateString, timeString) => {
     return new Date(`${dateString}T${timeString}`).toISOString();
@@ -32,16 +33,23 @@ const createEntry = (e) => {
 };
 
 const editEntry = (entry) => {
-    fetch(`${URL}/entries`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + JWT
-        },
-        body: JSON.stringify(entry)
-    }).then((result) => {
-        result.json().then(indexEntries());
-    });
+    // fetch(`${URL}/entries`, {
+    //     method: 'PUT',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': 'Bearer ' + JWT
+    //     },
+    //     body: JSON.stringify(entry)
+    // }).then((result) => {
+    //     result.json().then(indexEntries());
+    // });
+    mode = 'edit';
+    document.getElementById("btnSubmit").value = "Edit";
+    document.getElementById("checkInDate").value = entry['checkIn']; // TODO: Split time and date
+    document.getElementById("checkInTime").value = entry['checkIn'];
+    document.getElementById("checkOutDate").value = entry['checkOut'];
+    document.getElementById("checkOutTime").value = entry['checkOut'];
+
 };
 
 const deleteEntry = (entryId) => {
@@ -76,6 +84,7 @@ const createCell = (text) => {
     return cell;
 };
 
+// Generate the buttons for each table entry
 const createActions = (entry) => {
     const cell = document.createElement('td');
 
@@ -92,6 +101,7 @@ const createActions = (entry) => {
     return cell;
 }
 
+// Build the table
 const renderEntries = () => {
     const display = document.querySelector('#entryDisplay');
     display.innerHTML = '';

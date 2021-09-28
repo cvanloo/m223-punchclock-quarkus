@@ -23,14 +23,25 @@ public class EntryService {
         return entry;
     }
 
+    public Entry getEntryById(Long id) {
+        var query = entityManager.createQuery("FROM Entry WHERE id = :id").setParameter("id", id);
+        return (Entry) query.getSingleResult();
+    }
+
     @SuppressWarnings("unchecked")
-    public List<Entry> findAll() {
+    public List<Entry> getAllEntries() {
         var query = entityManager.createQuery("FROM Entry");
         return query.getResultList();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Entry> getAllEntriesFromUser(Long userId) {
+        var query = entityManager.createQuery("FROM Entry WHERE user_id = :userId").setParameter("userId", userId);
+        return query.getResultList();
+    }
+
     @Transactional
-    public boolean deleteEntryById(Long id) {
+    public boolean deleteEntry(Long id) {
         Entry entry = entityManager.find(Entry.class, id);
 
         if (null == entry) {

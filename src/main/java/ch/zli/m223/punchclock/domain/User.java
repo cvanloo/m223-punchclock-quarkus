@@ -21,6 +21,21 @@ public class User {
     @Column(nullable = false)
     private String role;
 
+    public User() { }
+
+    public User(Long id, String accountName, String passwdHash, String role) {
+        this.id = id;
+        this.accountName = accountName;
+        this.passwdHash = passwdHash;
+        this.role = role;
+    }
+
+    public User(String accountName, String passwdHash, String role) {
+        this.accountName = accountName;
+        this.passwdHash = passwdHash;
+        this.role = role;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

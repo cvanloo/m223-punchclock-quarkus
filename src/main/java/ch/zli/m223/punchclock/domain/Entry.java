@@ -21,6 +21,14 @@ public class Entry {
     @JoinColumn(nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(nullable = true)
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(nullable = true)
+    private Facility facility;
+
     public void setId(Long id) {
         this.id = id;
     }
