@@ -8,6 +8,18 @@ VALUES
 (1, 'test', '$2a$10$d1ZG88VwmtAgE0zs0wVXR.J.wEofuZ7Adl2LnDHiugLx2z4iLhZLG', 'User'),
 (2, 'hello', '$2a$10$d1ZG88VwmtAgE0zs0wVXR.J.wEofuZ7Adl2LnDHiugLx2z4iLhZLG', 'User');
 
+/* Create facilities */
+INSERT INTO facility (fulladdress, name)
+VALUES
+('Edenstrasse 20, 8045 Zuerich', 'ZLI'),
+('Brunnenstrasse 1, 8604 Volketswil', 'Zetes');
+
+/* Create Category */
+INSERT INTO category (description, name)
+VALUES
+('Multi-user applikation objektorientiert implementieren.', 'UeK 233'),
+('Einführung in Android App Entwicklung', 'Anrdoid');
+
 /* Create entries */
 INSERT INTO entry (checkin, checkout, user_id)
 VALUES
