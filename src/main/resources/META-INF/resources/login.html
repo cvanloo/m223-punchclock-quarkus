@@ -21,6 +21,7 @@
 <script>
     const URL = 'http://localhost:8080';
     const infoMsg = document.getElementById('info');
+    let test = null;
 
     const login = (e) => {
         e.preventDefault();
@@ -40,7 +41,11 @@
                 localStorage.setItem("jwt", token);
                 if (token !== "") {
                     infoMsg.textContent = "Successfully logged in.";
-                    window.location = `${URL}/index.html`;
+                    // find link for redirection
+                    let redirection = response.headers.get('link').split(';')[0];
+                    redirection = redirection.replace("<", "");
+                    redirection = redirection.replace(">", "");
+                    window.location = `${URL}/${redirection}`;
                 } else {
                     infoMsg.textContent = "Wrong credentials.";
                 }

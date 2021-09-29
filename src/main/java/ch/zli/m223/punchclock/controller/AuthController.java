@@ -54,7 +54,12 @@ public class AuthController {
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
 
-        return Response.ok(authService.generateValidJwtToken(user.getAccountName(), user.getRole())).build();
+        String redirectLink = "index.html";
+        if (user.getRole().equals("Admin")) {
+            redirectLink = "admin.html";
+        }
+
+        return Response.ok(authService.generateValidJwtToken(user.getAccountName(), user.getRole())).link(redirectLink, "redirect").build();
     }
 
     @POST

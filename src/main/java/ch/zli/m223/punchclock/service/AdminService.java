@@ -2,7 +2,6 @@ package ch.zli.m223.punchclock.service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
 import ch.zli.m223.punchclock.domain.User;
