@@ -9,7 +9,7 @@ const dateAndTimeToDate = (dateString, timeString) => {
 };
 
 const splitDateAndTime = (datetime) => {
-    return datetime = datetime.split("T");
+    return datetime.split("T");
 };
 
 const reset = () => {
@@ -43,7 +43,7 @@ const saveEdit = (entry) => {
         },
         body: JSON.stringify(entry)
     }).then((result) => {
-        result.json().then(indexEntries());
+        indexEntries();
         reset();
     });
 }
@@ -101,9 +101,9 @@ const indexEntries = () => {
     }).then((result) => {
         result.json().then((result) => {
             entries = result;
+            renderEntries();
         });
     });
-    renderEntries();
 };
 
 const createCell = (text) => {

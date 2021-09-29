@@ -102,3 +102,9 @@ Quarkus only has an API to create Bcrypt hashes, but no option to valide them. I
 
 For convenience, this functionality has been directly implemented into the
 `ch.zli.m223.punchclock.domain.User` entity.
+
+## SQL Test Data
+
+The file `test.sql` (lays in the project root) contains queries to create test data.
+
+You can copy-paste it's content into the sql statement field on the h2 service.
