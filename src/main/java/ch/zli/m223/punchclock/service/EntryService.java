@@ -5,6 +5,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 
 import ch.zli.m223.punchclock.domain.Entry;
@@ -14,8 +15,7 @@ public class EntryService {
     @Inject
     private EntityManager entityManager;
 
-    public EntryService() {
-    }
+    public EntryService() { }
 
     @Transactional 
     public Entry createEntry(Entry entry) {
@@ -25,7 +25,21 @@ public class EntryService {
 
     public Entry getEntryById(Long id) {
         var query = entityManager.createQuery("FROM Entry WHERE id = :id").setParameter("id", id);
-        return (Entry) query.getSingleResult();
+
+        try {
+            return (Entry) query.getSingleResult();
+        } catch (NoResultException nrx) {
+            return null;
+        }
+
+        //Entry entry;
+        //try {
+        //    entry = (Entry) query.getSingleResult();
+        //} catch (NoResultException nrx) {
+        //    return null;
+        //}
+
+        //return entry;
     }
 
     @SuppressWarnings("unchecked")

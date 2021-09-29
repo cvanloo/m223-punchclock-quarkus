@@ -14,7 +14,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.PathParam;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -42,51 +44,63 @@ public class EntryController {
     @Operation(summary = "List all Entries", description = "")
     public List<Entry> list(@Context SecurityContext ctx) {
         User user = adminService.getUserByName(ctx.getUserPrincipal().getName());
-        return entryService.getAllEntriesFromUser(user.getId());
+        if (null != user) {
+            return entryService.getAllEntriesFromUser(user.getId());
+        }
+        return null;
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add a new Entry", description = "The newly created entry is returned. The id may not be passed.")
-    public Entry add(Entry entry, @Context SecurityContext ctx) {
+    public Response add(Entry entry, @Context SecurityContext ctx) {
         if (entry.getCheckIn().isAfter(entry.getCheckOut())) {
-            return null;
+            return Response.status(Status.BAD_REQUEST).build();
         }
 
         String username = ctx.getUserPrincipal().getName();
         User user = adminService.getUserByName(username);
         
-        entry.setUser(user);
+        if (null != user) {
+            entry.setUser(user);
+            entry = entryService.createEntry(entry);
+            return Response.ok(entry).build();
+        }
 
-        return entryService.createEntry(entry);
+        return Response.status(Status.BAD_REQUEST).build();
+
     }
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete an Entry", description = "Deletes an entry")
-    public boolean delete(@PathParam("id") Long id, @Context SecurityContext ctx) {
+    public Response delete(@PathParam("id") Long id, @Context SecurityContext ctx) {
         User user = adminService.getUserByName(ctx.getUserPrincipal().getName());
         Entry entry = entryService.getEntryById(id);
-        if (entry.getUser().getId() == user.getId()) {
-            return entryService.deleteEntry(id);
+        if (null != entry && entry.getUser().getId() == user.getId()) {
+            if (entryService.deleteEntry(id)) {
+                return Response.ok(entry).build();
+            }
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
 
-        return false;
+        return Response.status(Status.UNAUTHORIZED).build();
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update an Entry", description = "Updates an Entry")
-    public Entry patch(Entry entry, @Context SecurityContext ctx) {
+    public Response patch(Entry entry, @Context SecurityContext ctx) {
         User user = adminService.getUserByName(ctx.getUserPrincipal().getName());
         Entry oldEntry = entryService.getEntryById(entry.getId()); // get old entry to make sure the user wasn't changed.
         if (oldEntry.getUser().getId() == user.getId()) {
-            return entryService.updateEntry(entry);
+            entry = entryService.updateEntry(entry);
+            return Response.ok(entry).build();
         }
 
-        return oldEntry;
+        return Response.status(Status.BAD_REQUEST).entity(oldEntry).build();
     }
 }
