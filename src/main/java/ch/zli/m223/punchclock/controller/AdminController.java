@@ -29,12 +29,21 @@ public class AdminController {
     @Inject
     AdminService adminService;
 
+    /**
+     * Get a list containing all users.
+     * @return a list of users.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> list() {
         return adminService.getAllUsers();
     }
 
+    /**
+     * Create a new user.
+     * @param user New user to create.
+     * @return A html response containing the newly created user.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -43,6 +52,11 @@ public class AdminController {
         return Response.ok(user).build();
     }
 
+    /**
+     * Delete a user.
+     * @param id Id of the user to delete.
+     * @return 200 OK if the user was successfully deleted, otherwise 400 BAD REQUEST.
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +68,11 @@ public class AdminController {
         return Response.status(Status.BAD_REQUEST).build();
     }
 
+    /**
+     * Modify a user.
+     * @param user The modified user.
+     * @return Returns the modified user on success, otherwise the unmodified (old) user.
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

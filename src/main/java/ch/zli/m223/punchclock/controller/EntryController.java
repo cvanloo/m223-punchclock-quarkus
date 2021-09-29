@@ -39,6 +39,11 @@ public class EntryController {
     @Inject
     AdminService adminService;
 
+    /**
+     * Get a list of all own entries.
+     * @param ctx The security context, based on the users submitted JWT Token.
+     * @return A list of all entries belonging to the authenticated user, `null` on error.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "List all Entries", description = "")
@@ -50,6 +55,12 @@ public class EntryController {
         return null;
     }
 
+    /**
+     * Create a new entry.
+     * @param entry New entry to create.
+     * @param ctx The security context, based on the users submitted JWT Token.
+     * @return 200 OK and the newly created entry on success, otherwise 400 BAD REQUEST.
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -71,6 +82,12 @@ public class EntryController {
         return Response.ok(entry).build();
     }
 
+    /**
+     * Delete an (own) entry.
+     * @param id Id of the entry to delete.
+     * @param ctx The security Context, based on the users submitted JWT Token.
+     * @return 200 OK on success, otherwise a 4XX or 5XX http status code.
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -88,6 +105,12 @@ public class EntryController {
         return Response.status(Status.UNAUTHORIZED).build();
     }
 
+    /**
+     * Modify an (own) entry.
+     * @param entry The modified entry.
+     * @param ctx The security context, based on the users submitted JWT Token.
+     * @return 200 OK and the modified entry on success, otherwise 400 BAD REQUEST.
+     */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

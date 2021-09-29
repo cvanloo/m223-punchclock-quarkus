@@ -35,6 +35,11 @@ public class AuthController {
     @Inject
     EntityManager entityManager;
 
+    /**
+     * Request a JWT Token.
+     * @param authRequest Request containing the username and password.
+     * @return 200 OK an the JWT Token on success, otherwise just a 4XX or 5XX http status code.
+     */
     @POST
     @Path("/login")
     @PermitAll
@@ -62,6 +67,11 @@ public class AuthController {
         return Response.ok(authService.generateValidJwtToken(user.getAccountName(), user.getRole())).link(redirectLink, "redirect").build();
     }
 
+    /**
+     * Register an account.
+     * @param authRequest A request containing the username and a password.
+     * @return 200 OK on success, otherwise 400 BAD REQUEST.
+     */
     @POST
     @Path("/register")
     @PermitAll
