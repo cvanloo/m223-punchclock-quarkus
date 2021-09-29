@@ -54,9 +54,9 @@ const submit = (e) => {
     const entry = {};
     entry['checkIn'] = dateAndTimeToDate(formData.get('checkInDate'), formData.get('checkInTime'));
     entry['checkOut'] = dateAndTimeToDate(formData.get('checkOutDate'), formData.get('checkOutTime'));
-    entry['user'] = null; 
-    entry['category'] = null;
-    entry['facility'] = null;
+    entry['user'] = null; // user is set by the REST API based on the JWT Token.
+    entry['category'] = null; // hasn't been implemented by the user interface yet.
+    entry['facility'] = null; // hasn't been implemented by the user interface yet.
 
     if (mode === 'create') {
         createEntry(entry);
