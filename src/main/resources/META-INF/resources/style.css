@@ -7,7 +7,3 @@ input {
 input[type='submit'], table {
     margin-top: 1rem;
 }
-
-table {
-    width: 40rem;
-}

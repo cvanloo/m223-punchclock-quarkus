@@ -11,6 +11,8 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.PathParam;
 
 import ch.zli.m223.punchclock.service.AdminService;
@@ -36,15 +38,20 @@ public class AdminController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User add(User user) {
-        return adminService.createUser(user);
+    public Response add(User user) {
+        user = adminService.createUser(user);
+        return Response.ok(user).build();
     }
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean delete(@PathParam("id") Long id) {
-        return adminService.deleteUser(id);
+    public Response delete(@PathParam("id") Long id) {
+        if (adminService.deleteUser(id)) {
+            return Response.ok().build();
+        }
+
+        return Response.status(Status.BAD_REQUEST).build();
     }
 
     @PUT

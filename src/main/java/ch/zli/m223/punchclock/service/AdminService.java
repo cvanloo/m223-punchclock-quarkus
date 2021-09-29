@@ -22,12 +22,14 @@ public class AdminService {
 
     @Transactional
     public User createUser(User user) {
-        try {
-            entityManager.persist(user);
-        } catch (PersistenceException pe) {
-            return null;
-        }
+        entityManager.persist(user);
         return user;
+        // try {
+        //     entityManager.persist(user);
+        // } catch (PersistenceException pe) {
+        //     return null;
+        // }
+        // return user;
     }
 
     @Transactional

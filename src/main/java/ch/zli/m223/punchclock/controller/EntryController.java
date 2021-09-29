@@ -62,14 +62,13 @@ public class EntryController {
         String username = ctx.getUserPrincipal().getName();
         User user = adminService.getUserByName(username);
         
-        if (null != user) {
-            entry.setUser(user);
-            entry = entryService.createEntry(entry);
-            return Response.ok(entry).build();
+        if (null == user) {
+            return Response.status(Status.BAD_REQUEST).build();
         }
 
-        return Response.status(Status.BAD_REQUEST).build();
-
+        entry.setUser(user);
+        entry = entryService.createEntry(entry);
+        return Response.ok(entry).build();
     }
 
     @DELETE
@@ -81,7 +80,7 @@ public class EntryController {
         Entry entry = entryService.getEntryById(id);
         if (null != entry && entry.getUser().getId() == user.getId()) {
             if (entryService.deleteEntry(id)) {
-                return Response.ok(entry).build();
+                return Response.ok().build();
             }
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }

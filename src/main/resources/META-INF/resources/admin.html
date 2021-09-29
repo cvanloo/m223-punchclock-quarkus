@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Punchclock Admin Page</title>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+    <body>
+        <h2>Admin</h2>
+        <h5>Create User</h5>
+        <form id="createUserForm">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+            <label for="role">Role</label>
+            <input type="text" name="role" id="role" required>
+            <input id="btnSubmit" type="submit" value="Create" />
+            <input id="btnReset" type="reset" />
+        </form>
+        <h5>Users</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Accountname</th>
+                    <th>Passwordhash</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody id="userContainer">
+                <tr>
+                    <td colspan="3">Loading...</td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
+
+<script>
+    const URL = "http://localhost:8080";
+    const JWT = localStorage.getItem("jwt"); // read jwt from session storage
+    let Users = [];
+    let mode = 'create';
+    let selectedUser = null;
+
+    const getUsers = () => {
+        fetch(`${URL}/admin`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + JWT
+            }
+        }).then(response => response.json().then(result => {
+            Users = result;
+            renderUsers();
+        }));
+    };
+
+    const deleteUser = (userId) => {
+        fetch(`${URL}/admin/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + JWT
+            }
+        }).then(response => {
+            getUsers();
+        });
+    };
+
+    const updateUser = (user) => {
+        mode = 'edit';
+        selectedUser = user;
+        document.getElementById("btnSubmit").value = "Save changes";
+
+        document.getElementById("username").value = user.accountName;
+        document.getElementById("role").value = user.role;
+    };
+
+    const createCell = (text) => {
+        const cell = document.createElement('td');
+        cell.innerText = text;
+        return cell;
+    };
+
+    const createActions = (user) => {
+        const cell = document.createElement('td');
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.addEventListener('click', () => deleteUser(user.id));
+        cell.appendChild(deleteButton);
+        
+        const changeButton = document.createElement('button');
+        changeButton.innerText = 'Change';
+        changeButton.addEventListener('click', () => updateUser(user))
+        cell.appendChild(changeButton);
+
+        return cell;
+    }
+
+    const renderUsers = () => {
+        const container = document.querySelector('#userContainer');
+        container.innerHTML = '';
+        Users.forEach(user => {
+            const row = document.createElement('tr');
+
+            row.appendChild(createCell(user.id));
+            row.appendChild(createCell(user.accountName));
+            row.appendChild(createCell(user.passwordHash));
+            row.appendChild(createCell(user.role));
+            row.appendChild(createActions(user));
+
+            container.appendChild(row);
+        });
+    };
+
+    const reset = (e) => {
+        mode = 'create';
+        selectedUser = null;
+        document.getElementById("btnSubmit").value = "Create";
+    }
+
+    const createUser = (user) => {
+        fetch(`${URL}/admin`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JWT
+            },
+            body: JSON.stringify(user)
+        }).then(response => {
+            response.json().then(result => {
+            //Users.push(result);
+            getUsers();
+            })
+        });
+    }
+
+    const saveChanges = (user) => {
+        fetch(`${URL}/admin`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JWT
+            },
+            body: JSON.stringify(user)
+        }).then(response => {
+            response.json().then(result => {
+            //Users.push(result);
+            getUsers();
+            })
+        });
+    }
+
+    const submit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const user = {};
+        // NOTE(cvl): Names need to match exactly the names used in the java entities.
+        user['accountName'] = formData.get('username');
+        user['passwdHash'] = formData.get('password');
+        user['role'] = formData.get('role');
+
+        if (mode === 'create') {
+            createUser(user);
+        } else if (mode === 'edit') {
+            user['id'] = selectedUser.id;
+            saveChanges(user);
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function(){
+        const createUserForm = document.querySelector('#createUserForm');
+        createUserForm.addEventListener('submit', submit);
+        createUserForm.addEventListener('reset', reset);
+
+        getUsers();
+    });
+</script>

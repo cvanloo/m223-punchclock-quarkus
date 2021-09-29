@@ -101,7 +101,6 @@ const indexEntries = () => {
     }).then((result) => {
         result.json().then((result) => {
             entries = result;
-            renderEntries();
         });
     });
     renderEntries();
