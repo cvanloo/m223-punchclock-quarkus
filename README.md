@@ -48,6 +48,14 @@ URI            | Description
 /index.html    | Punchclock interface for users.
 /admin.html    | Admin page.
 
+## User Roles
+
+There are two roles: `User` and `Admin`. When creating an account from the
+admin page, the role has to be manually entered into the text field.
+
+When creating an account by signing up on the register page, the account
+will be automatically created using the role `User`.
+
 ## Admin Accounts
 
 Admin accounts need to be manually created using the H2 interface or on the Admin-Page using a different
@@ -67,6 +75,16 @@ VALUES ('admin', '$2a$10$d1ZG88VwmtAgE0zs0wVXR.J.wEofuZ7Adl2LnDHiugLx2z4iLhZLG',
 ```
 Then click on "Run".
 This creates an account named `admin` using the password `test`.
+
+### Create Admin account using the Admin interface
+
+For that to work, at least one admin account already has to exist.
+
+1. Log into an admin account.
+2. Navigate to [http://localhost:8080/admin.html].
+3. In the form enter a Username and Password.
+4. In Role enter "Admin".
+5. Click on `Create`.
 
 ## Password Hashing
 
