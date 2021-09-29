@@ -97,6 +97,7 @@ public class EntryController {
         User user = adminService.getUserByName(ctx.getUserPrincipal().getName());
         Entry oldEntry = entryService.getEntryById(entry.getId()); // get old entry to make sure the user wasn't changed.
         if (oldEntry.getUser().getId() == user.getId()) {
+            entry.setUser(user);
             entry = entryService.updateEntry(entry);
             return Response.ok(entry).build();
         }

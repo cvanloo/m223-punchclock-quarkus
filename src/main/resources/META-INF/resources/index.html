@@ -12,12 +12,13 @@
     <body>
         <form id="createEntryForm">
             <label for="checkIn">Check in</label>
-            <input type="date" name="checkInDate" id="checkIn" required>
-            <input type="time" name="checkInTime" required>
+            <input type="date" name="checkInDate" id="checkInDate" required>
+            <input type="time" name="checkInTime" id="checkInTime" required>
             <label for="checkOut">Check out</label>
-            <input type="date" name="checkOutDate" id="checkOut" required>
-            <input type="time" name="checkOutTime" required>
-            <input id="btnSubmit" type="submit" value="Save" />
+            <input type="date" name="checkOutDate" id="checkOutDate" required>
+            <input type="time" name="checkOutTime" id="checkOutTime" required>
+            <input id="btnSubmit" type="submit" value="Create" />
+            <input id="btnReset" type="reset" />
         </form>
         <table id="tableList">
             <thead>

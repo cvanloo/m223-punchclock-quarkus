@@ -2,21 +2,23 @@ const URL = 'http://localhost:8080';
 const JWT = localStorage.getItem("jwt"); // read jwt from session storage
 let entries = [];
 let mode = 'create';
+let selectedEntry = null;
 
 const dateAndTimeToDate = (dateString, timeString) => {
     return new Date(`${dateString}T${timeString}`).toISOString();
 };
 
-const createEntry = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const entry = {};
-    entry['checkIn'] = dateAndTimeToDate(formData.get('checkInDate'), formData.get('checkInTime'));
-    entry['checkOut'] = dateAndTimeToDate(formData.get('checkOutDate'), formData.get('checkOutTime'));
-    entry['user'] = null; 
-    entry['category'] = null;
-    entry['facility'] = null;
+const splitDateAndTime = (datetime) => {
+    return datetime = datetime.split("T");
+};
 
+const reset = () => {
+    mode = 'create';
+    selectedEntry = null;
+    document.getElementById("btnSubmit").value = "Create";
+}
+
+const createEntry = (entry) => {
     fetch(`${URL}/entries`, {
         method: 'POST',
         headers: {
@@ -32,24 +34,51 @@ const createEntry = (e) => {
     });
 };
 
-const editEntry = (entry) => {
-    // fetch(`${URL}/entries`, {
-    //     method: 'PUT',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': 'Bearer ' + JWT
-    //     },
-    //     body: JSON.stringify(entry)
-    // }).then((result) => {
-    //     result.json().then(indexEntries());
-    // });
-    mode = 'edit';
-    document.getElementById("btnSubmit").value = "Edit";
-    document.getElementById("checkInDate").value = entry['checkIn']; // TODO: Split time and date
-    document.getElementById("checkInTime").value = entry['checkIn'];
-    document.getElementById("checkOutDate").value = entry['checkOut'];
-    document.getElementById("checkOutTime").value = entry['checkOut'];
+const saveEdit = (entry) => {
+    fetch(`${URL}/entries`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + JWT
+        },
+        body: JSON.stringify(entry)
+    }).then((result) => {
+        result.json().then(indexEntries());
+        reset();
+    });
+}
 
+const submit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const entry = {};
+    entry['checkIn'] = dateAndTimeToDate(formData.get('checkInDate'), formData.get('checkInTime'));
+    entry['checkOut'] = dateAndTimeToDate(formData.get('checkOutDate'), formData.get('checkOutTime'));
+    entry['user'] = null; 
+    entry['category'] = null;
+    entry['facility'] = null;
+
+    if (mode === 'create') {
+        createEntry(entry);
+    } else if (mode === 'edit') {
+        entry['id'] = selectedEntry['id'];
+        saveEdit(entry);
+    }
+};
+
+const editEntry = (entry) => {
+    mode = 'edit';
+    selectedEntry = entry;
+
+    document.getElementById("btnSubmit").value = "Save changes";
+
+    const datetimeIn = splitDateAndTime(entry['checkIn']);
+    const datetimeOut = splitDateAndTime(entry['checkOut']);
+
+    document.getElementById("checkInDate").value = datetimeIn[0];
+    document.getElementById("checkInTime").value = datetimeIn[1];
+    document.getElementById("checkOutDate").value = datetimeOut[0];
+    document.getElementById("checkOutTime").value = datetimeOut[1];
 };
 
 const deleteEntry = (entryId) => {
@@ -117,6 +146,7 @@ const renderEntries = () => {
 
 document.addEventListener('DOMContentLoaded', function(){
     const createEntryForm = document.querySelector('#createEntryForm');
-    createEntryForm.addEventListener('submit', createEntry);
+    createEntryForm.addEventListener('submit', submit);
+    createEntryForm.addEventListener('reset', reset);
     indexEntries();
 });
