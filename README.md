@@ -109,3 +109,8 @@ For convenience, this functionality has been directly implemented into the
 The file `test.sql` (lays in the project root) contains queries to create test data.
 
 You can copy-paste it's content into the sql statement field on the h2 service.
+
+## Facility & Category
+
+It is possible to add a facility and category to an entry. This functionality hasn't been implemented yet in
+the user interface, but it can be done using e.g. Postman.
