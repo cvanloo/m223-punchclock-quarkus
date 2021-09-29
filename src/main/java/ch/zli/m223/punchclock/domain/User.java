@@ -2,7 +2,12 @@ package ch.zli.m223.punchclock.domain;
 
 import javax.persistence.*;
 
-//import io.quarkus.security.common.BcryptUtil;
+import org.wildfly.security.password.Password;
+import org.wildfly.security.password.PasswordFactory;
+import org.wildfly.security.password.interfaces.BCryptPassword;
+import org.wildfly.security.password.util.ModularCrypt;
+
+import io.quarkus.elytron.security.common.BcryptUtil;
 
 @Entity
 public class User {
@@ -12,7 +17,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String accountName;
 
     @Column(nullable = false)
@@ -23,16 +28,16 @@ public class User {
 
     public User() { }
 
-    public User(Long id, String accountName, String passwdHash, String role) {
+    public User(Long id, String accountName, String passwd, String role) {
         this.id = id;
         this.accountName = accountName;
-        this.passwdHash = passwdHash;
+        this.passwdHash = getPasswdHash(passwd);
         this.role = role;
     }
 
-    public User(String accountName, String passwdHash, String role) {
+    public User(String accountName, String passwd, String role) {
         this.accountName = accountName;
-        this.passwdHash = passwdHash;
+        this.passwdHash = getPasswdHash(passwd);
         this.role = role;
     }
 
@@ -53,8 +58,7 @@ public class User {
     }
 
     public void setPasswdHash(String passwd) {
-        //this.passwdHash = BcryptUtil.bcryptHash(passwd);
-        this.passwdHash = passwd; // TODO: Hash
+        this.passwdHash = getPasswdHash(passwd);
     }
 
     public String getPasswordHash() {
@@ -69,8 +73,21 @@ public class User {
         return role;
     }
 
-    public boolean checkPassword(String passwd) {
-        //return passwdHash.equals(BcryptUtil.bcryptHash(passwd));
-        return passwdHash.equals(passwd); // TODO: Hash
+    public boolean checkPassword(String passwd) throws Exception {
+        // convert encrypted password string to a password key
+        Password rawPassword = ModularCrypt.decode(passwdHash);
+
+        // create the password factory based on the bcrypt algorithm
+        PasswordFactory factory = PasswordFactory.getInstance(BCryptPassword.ALGORITHM_BCRYPT);
+
+        // create encrypted password based on stored string
+        BCryptPassword restored = (BCryptPassword) factory.translate(rawPassword);
+
+        // verify restored password against original
+        return factory.verify(restored, passwd.toCharArray());
+    }
+
+    private String getPasswdHash(String passwd) {
+        return BcryptUtil.bcryptHash(passwd);
     }
 }

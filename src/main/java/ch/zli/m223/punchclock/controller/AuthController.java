@@ -46,8 +46,12 @@ public class AuthController {
             return Response.status(Status.UNAUTHORIZED).build(); // Wrong username
         }
 
-        if (!user.checkPassword(authRequest.password)) {
-            return Response.status(Status.UNAUTHORIZED).build(); // Wrong password
+        try {
+            if (!user.checkPassword(authRequest.password)) {
+                return Response.status(Status.UNAUTHORIZED).build(); // Wrong password
+            }
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
 
         return Response.ok(authService.generateValidJwtToken(user.getAccountName(), user.getRole())).build();
@@ -64,6 +68,6 @@ public class AuthController {
             return Response.ok().build();
         }
 
-        return Response.status(Status.UNAUTHORIZED).build();
+        return Response.status(Status.BAD_REQUEST).build();
     }
 }
