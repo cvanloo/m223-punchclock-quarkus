@@ -47,6 +47,7 @@ URI            | Description
 /login.html    | Login for users and admins.
 /index.html    | Punchclock interface for users.
 /admin.html    | Admin page.
+/logout.html   | Logout for users and admins.
 
 ## User Roles
 
